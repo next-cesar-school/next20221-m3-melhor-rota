@@ -8,11 +8,11 @@
 		<version>2.7.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.api</groupId>
-	<artifactId>best-route</artifactId>
+	<groupId>com</groupId>
+	<artifactId>next-m3-project</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>best-route</name>
-	<description>projeto api que encontra melhor rota</description>
+	<name>next-m3-project</name>
+	<description>Projeto next melhor rota</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
