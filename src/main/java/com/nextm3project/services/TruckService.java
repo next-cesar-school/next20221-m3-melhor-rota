@@ -1,6 +1,7 @@
 package com.nextm3project.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -12,7 +13,7 @@ import com.nextm3project.repositories.TruckRepository;
 @Service //Por ser uma camada de servico, deve inserir o esteriótipo @Service
 public class TruckService {
 
-	//Criando ponto de injeção de dependencias do ParkingSpotRepository
+	//Criando ponto de injeção de dependencias do TrcukRepository
 	
 	final TruckRepository truckRepository;
 	
@@ -29,8 +30,12 @@ public class TruckService {
 		return truckRepository.existsByLicensePlateTruck(licensePlateTruck);    //Para funcionar foram declarados em Repository (1).
 	}
 
-	public List<TruckModel> findAll() {											//Método criado para exibir todas as vagas cadastradas solicitado pelo Controller.
+	public List<TruckModel> findAll() {											//Método criado para exibir todos os caminhoes cadastrados solicitado pelo Controller.
 		return truckRepository.findAll();
+	}
+
+	public Optional<TruckModel> findById(Integer id) {							//Método criado para buscas (pesquisar) o caminhao no banco de dados o id através do Controller.
+		return truckRepository.findById(id);
 	}
 		
 }

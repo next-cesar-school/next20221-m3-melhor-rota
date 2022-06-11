@@ -3,6 +3,7 @@ package com.nextm3project.controllers;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,12 +46,22 @@ public class TruckController {
         return ResponseEntity.status(HttpStatus.CREATED).body(truckService.save(truckModel));
     }
 	
-	//Criando um método GET All para exibicao da listagem de todos os caminhoes cadastradas no banco de dados.
+	//Criando um método GET All para exibicao da listagem de todos os caminhoes cadastrados no banco de dados.
 	@GetMapping
 	public ResponseEntity<List<TruckModel>> getAllTruck(){
 		return ResponseEntity.status(HttpStatus.OK).body(truckService.findAll());
 	}
-
+	
+	//Criando um método GET ONE para exibicao do caminhao cadastrado no banco de dados buscando pelo Id.
+	@GetMapping("/{id}")
+	public ResponseEntity<Object> getOneTruck(@PathVariable(value = "id") Integer id){
+		Optional<TruckModel> truckModelOptional = truckService.findById(id);			//Método findByid serve buscar o id no banco de dados e vai retornar um Optional de TruckModel
+		if (!truckModelOptional.isPresent()) {											//Condicao para verificar se aquele id digitado existe ou não.
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");//Se este Optional não estiver presente, será retornado uma mensagem not found.
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(truckModelOptional.get());
+	}
+	
 }
 
 //@Autowired									//Autowired: Serve para informar ao Spring que em determinados momentos 
