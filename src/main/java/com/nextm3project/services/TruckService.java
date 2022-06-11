@@ -37,6 +37,11 @@ public class TruckService {
 	public Optional<TruckModel> findById(Integer id) {							//Método criado para buscas (pesquisar) o caminhao no banco de dados o id através do Controller.
 		return truckRepository.findById(id);
 	}
+
+	@Transactional																//É importante usar o @Transactional, principalmente quando tem relacionamento, em metodos destrutivos ou construtivos.
+	public void delete(TruckModel truckModel) {									//Método criado para realizar o delete pelo id, poder ser chamado pelo Controller.
+		truckRepository.delete(truckModel);
+	}
 		
 }
 

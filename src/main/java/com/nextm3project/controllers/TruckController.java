@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,6 +63,19 @@ public class TruckController {
 		return ResponseEntity.status(HttpStatus.OK).body(truckModelOptional.get());
 	}
 	
+	//Criando um método PUT para atualizar algum caminhão do banco de dados, sendo acessado pelo Id.
+	@PutMapping("/{id}")
+	public ResponseEntity<Object> updateTruck(@PathVariable(value = "id") Integer id, @RequestBody @Valid TruckDto truckDto){
+		Optional<TruckModel> truckModelOptional = truckService.findById(id);			//Fazendo dessa forma, garante que o id e a data de registro não serão modificados.
+		if (!truckModelOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");
+		}
+		//Aproveitando o registro que foi obtido na verificacao do if (truckModelOptional), assim não preciso instanciar do zero.
+		var truckModel = truckModelOptional.get();
+		truckModel.setStatus(truckDto.getStatus());										//Setando os dados que podem ser atualizados.
+		truckModel.setLocation(truckDto.getLocation());									//Nao coloquei a placa do caminhao para atualizar.
+		return ResponseEntity.status(HttpStatus.OK).body(truckService.save(truckModel));
+	}
 }
 
 //@Autowired									//Autowired: Serve para informar ao Spring que em determinados momentos 
