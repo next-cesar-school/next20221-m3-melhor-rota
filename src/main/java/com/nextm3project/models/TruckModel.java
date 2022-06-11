@@ -25,11 +25,11 @@ public class TruckModel implements Serializable {  //Serializable + serialVersio
 	@Column(nullable = false, length = 5)
 	private String status; //Status do caminhao
 	
-	@Column(nullable = false)
-	private LocalDateTime registrationDate;  //Data de registro
-	
 	@Column(nullable = false, length = 10)
 	private String location; //localizacao (vértice)
+	
+	@Column(nullable = false)
+	private LocalDateTime registrationDate;  //Data de registro
 
 	public Integer getId() {
 		return id;
@@ -55,14 +55,6 @@ public class TruckModel implements Serializable {  //Serializable + serialVersio
 		this.status = status;
 	}
 
-	public LocalDateTime getRegistrationDate() {
-		return registrationDate;
-	}
-
-	public void setRegistrationDate(LocalDateTime registrationDate) {
-		this.registrationDate = registrationDate;
-	}
-
 	public String getLocation() {
 		return location;
 	}
@@ -71,7 +63,11 @@ public class TruckModel implements Serializable {  //Serializable + serialVersio
 		this.location = location;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}	
+	public LocalDateTime getRegistrationDate() {
+		return registrationDate;
+	}
+
+	public void setRegistrationDate(LocalDateTime registrationDate) {
+		this.registrationDate = registrationDate;
+	}
 }
