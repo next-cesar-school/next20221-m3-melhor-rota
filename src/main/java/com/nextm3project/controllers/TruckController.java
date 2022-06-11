@@ -2,6 +2,7 @@ package com.nextm3project.controllers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -9,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +43,12 @@ public class TruckController {
         truckModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));			//Setando a data de registro de forma automatica.
         return ResponseEntity.status(HttpStatus.CREATED).body(truckService.save(truckModel));
     }
+	
+	//Criando um método GET All para exibicao da listagem de todas as vagas cadastradas no banco de dados.
+	@GetMapping
+	public ResponseEntity<List<TruckModel>> getAllTruck(){
+		return ResponseEntity.status(HttpStatus.OK).body(truckService.findAll());
+	}
 
 }
 

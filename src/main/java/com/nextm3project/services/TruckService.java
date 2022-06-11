@@ -1,5 +1,7 @@
 package com.nextm3project.services;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -25,6 +27,10 @@ public class TruckService {
 			
 	public boolean existsByLicensePlateTruck(String licensePlateTruck) {  		//Método criado para verificar se já existe a placa do caminhao inserido pelo cliente na classe Controller.
 		return truckRepository.existsByLicensePlateTruck(licensePlateTruck);    //Para funcionar foram declarados em Repository (1).
+	}
+
+	public List<TruckModel> findAll() {											//Método criado para exibir todas as vagas cadastradas solicitado pelo Controller.
+		return truckRepository.findAll();
 	}
 		
 }
