@@ -38,13 +38,13 @@ public class TruckController {
         if(truckService.existsByLicensePlateTruck(truckDto.getLicensePlateTruck())){	//Verificação se já existe registro dos dados: placa do caminhao.
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Truck License Plate is already in use!");
         }        
-        var truckModel = new TruckModel();												//Iniciando uma instância para salvar os dados em ParkingSpotModel
+        var truckModel = new TruckModel();												//Iniciando uma instância para salvar os dados em TruckModel
         BeanUtils.copyProperties(truckDto, truckModel);									//Convertendo os dados inseridos em Dto para Model
         truckModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));			//Setando a data de registro de forma automatica.
         return ResponseEntity.status(HttpStatus.CREATED).body(truckService.save(truckModel));
     }
 	
-	//Criando um método GET All para exibicao da listagem de todas as vagas cadastradas no banco de dados.
+	//Criando um método GET All para exibicao da listagem de todos os caminhoes cadastradas no banco de dados.
 	@GetMapping
 	public ResponseEntity<List<TruckModel>> getAllTruck(){
 		return ResponseEntity.status(HttpStatus.OK).body(truckService.findAll());

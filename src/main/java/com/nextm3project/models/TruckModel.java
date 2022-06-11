@@ -17,7 +17,7 @@ public class TruckModel implements Serializable {  //Serializable + serialVersio
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO) //Gerando o Id de forma automatica
-	private Integer id; //UUID tipo do identificador apropriado univesal, para melhor distribuicao
+	private Integer id; 
 	
 	@Column(nullable = false, unique = true, length = 7)
 	private String licensePlateTruck; //Placa do caminhao
