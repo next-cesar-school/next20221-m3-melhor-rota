@@ -1,9 +1,12 @@
 package com.nextm3project.bestRoute;
 
-import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Scanner;
+
+import com.nextm3project.models.TruckModel;
 
 
 public class BestRoute 
@@ -34,7 +37,7 @@ public class BestRoute
     	int contLineMat = 0;
 		
     	// inicio da leitura do grafo
-    	String pathArq = "C:\\Users\\Émerson Morais\\eclipse-workspace\\next20221-m3-melhor-rota\\src\\main\\java\\com\\nextm3project\\bestRoute\\MODELAGEM_DESAFIO_NEXT.csv";
+    	String pathArq = "C:\\temp\\ws-next-project\\next-m3-project\\src\\main\\java\\com\\nextm3project\\bestRoute\\MODELAGEM_DESAFIO_NEXT.csv";
 				
 		try (BufferedReader br = new BufferedReader(new FileReader(pathArq))) {
 					
@@ -73,10 +76,14 @@ public class BestRoute
                     path[i][j] = i;
 
     	shortestpath(m, path);
- 
-    	int statusCaminhao = 0; // comunicar com o dado da classe caminhão
+    	
+    	TruckModel truckModel = new TruckModel();
+    	String statusCaminhao = truckModel.getStatus(); // comunicar com o dado da classe caminhão
     	// se statusCaminhao = 0, ele está vazio
     	// se statusCaminhao = 1, ele está cheio
+    	
+    	String location[] = {"INT1", "INT2", "INT3", "INT4", "INT5", "INT6", "INT7", "INT8", "INT9", "INT10", "INT11", "INT12", "INT13", "ESC1", "ESC2", "ESC3", "DESC1", "DESC2", "DESC3"};
+    	int verticeIndex[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19};
     	
     	System.out.println("---------------------------");
     	System.out.println("|  MELHOR ROTA  EQUIPE M3 |");
@@ -89,7 +96,7 @@ public class BestRoute
         int start = sc.nextInt();
         System.out.println();
         	
-    	if (statusCaminhao == 1){
+    	if (statusCaminhao == "cheio" || statusCaminhao == "Cheio" || statusCaminhao == "CHEIO"){
 	    	
 	    	int desc1 = 16;
 	    	int desc2 = 17;
@@ -152,7 +159,7 @@ public class BestRoute
 	    	
 	    	sc.close();
 	    	
-        }else {
+        }else if(statusCaminhao == "vazio" || statusCaminhao == "Vazio" || statusCaminhao == "VAZIO"){
         	int esc1 = 13;
 	    	int esc2 = 14;
 	    	int esc3 = 15;
