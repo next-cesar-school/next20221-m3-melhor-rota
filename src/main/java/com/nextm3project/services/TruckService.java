@@ -34,8 +34,8 @@ public class TruckService {
 		return truckRepository.findAll();
 	}
 
-	public Optional<TruckModel> findById(Integer id) {							//Método criado para buscas (pesquisar) o caminhao no banco de dados o id através do Controller.
-		return truckRepository.findById(id);
+	public Optional<TruckModel> findByLicensePlateTruck(String licensePlateTruck) {							//Método criado para buscas (pesquisar) o caminhao no banco de dados o id através do Controller.
+		return truckRepository.findByLicensePlateTruck(licensePlateTruck);
 	}
 
 	@Transactional																//É importante usar o @Transactional, principalmente quando tem relacionamento, em metodos destrutivos ou construtivos.

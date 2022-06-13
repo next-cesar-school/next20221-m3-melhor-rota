@@ -53,20 +53,20 @@ public class TruckController {
 		return ResponseEntity.status(HttpStatus.OK).body(truckService.findAll());
 	}
 	
-	//Criando um método GET ONE para exibicao do caminhao cadastrado no banco de dados buscando pelo Id.
-	@GetMapping("/{id}")
-	public ResponseEntity<Object> getOneTruck(@PathVariable(value = "id") Integer id){
-		Optional<TruckModel> truckModelOptional = truckService.findById(id);			//Método findByid serve buscar o id no banco de dados e vai retornar um Optional de TruckModel
-		if (!truckModelOptional.isPresent()) {											//Condicao para verificar se aquele id digitado existe ou não.
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");//Se este Optional não estiver presente, será retornado uma mensagem not found.
+	//Criando um método GET ONE para exibicao do caminhao cadastrado no banco de dados buscando pela placa do caminhão.
+	@GetMapping("/{licensePlateTruck}")
+	public ResponseEntity<Object> getOneTruck(@PathVariable(value = "licensePlateTruck") String licensePlateTruck){
+		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);			//Método findByid serve buscar o id no banco de dados e vai retornar um Optional de TruckModel
+		if (!truckModelOptional.isPresent()) {																		//Condicao para verificar se aquele id digitado existe ou não.
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");							//Se este Optional não estiver presente, será retornado uma mensagem not found.
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(truckModelOptional.get());
 	}
 	
 	//Criando um método PUT para atualizar algum caminhão do banco de dados, sendo acessado pelo Id.
-	@PutMapping("/{id}")
-	public ResponseEntity<Object> updateTruck(@PathVariable(value = "id") Integer id, @RequestBody @Valid TruckDto truckDto){
-		Optional<TruckModel> truckModelOptional = truckService.findById(id);			//Fazendo dessa forma, garante que o id e a data de registro não serão modificados.
+	@PutMapping("/{licensePlateTruck}")
+	public ResponseEntity<Object> updateTruck(@PathVariable(value = "licensePlateTruck") String licensePlateTruck, @RequestBody @Valid TruckDto truckDto){
+		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);			//Fazendo dessa forma, garante que o id e a data de registro não serão modificados.
 		if (!truckModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");
 		}
