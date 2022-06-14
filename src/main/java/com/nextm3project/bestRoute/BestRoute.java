@@ -3,40 +3,15 @@ package com.nextm3project.bestRoute;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-<<<<<<< HEAD
-import java.util.Scanner;
-=======
-import org.apache.commons.lang3.ArrayUtils;
->>>>>>> 2da3b60 (Atualização do pom com biblioteca e best route)
+import java.util.Arrays;
 
 import com.nextm3project.models.TruckModel;
 
 
 public class BestRoute 
 {
-    public static int[][] shortestpath(int[][] adj, int[][] path) 
-    {
-        int n = adj.length;
-        int[][] ans = new int[n][n];
-        copy(ans, adj);
-    	for (int k=0; k<n;k++) 
-            for (int i=0; i<n; i++) 
-        	for (int j=0; j<n;j++) 
-                    if (ans[i][k]+ans[k][j] < ans[i][j]) {
-                        ans[i][j] = ans[i][k]+ans[k][j];
-          		        path[i][j] = path[k][j]; // k Ã© a conexÃ£o entre pontos
-                    }
-    	return ans;
-    }
-    public static void copy(int[][] a, int[][] b) 
-    {
-        for (int i=0;i<a.length;i++)
-            for (int j=0;j<a[0].length;j++)
-                a[i][j] = b[i][j];
-    }
-    public static void main(String[] args) {
-        
-    	int[][] m = new int[19][19];
+	public static String routeCalc (String status , String location) {
+		int[][] m = new int[19][19];
     	int contLineMat = 0;
 		
     	// inicio da leitura do grafo
@@ -83,27 +58,15 @@ public class BestRoute
     	shortestpath(m, path);
     	
     	TruckModel truckModel = new TruckModel();
-    	String statusCaminhao = "cheio"; //truckModel.getStatus(); // cheio ou vazio
-    	String locationCaminhao = "INT5"; //truckModel.getLocation(); // location 
+    	String statusCaminhao = status; // cheio ou vazio
+    	String locationCaminhao = location; //truckModel.getLocation(); // location 
     	
     	
     	String locationGraph[] = {"INT1", "INT2", "INT3", "INT4", "INT5", "INT6", "INT7", "INT8", "INT9", "INT10", "INT11", "INT12", "INT13", "ESC1", "ESC2", "ESC3", "DESC1", "DESC2", "DESC3"};
-		int indexMatriz = ArrayUtils.indexOf(locationGraph, locationCaminhao);
+    	int indexMatriz = Arrays.asList(locationGraph).indexOf(locationCaminhao);
 		int start = indexMatriz;
     	
-    	truckModel.getStatus();
-    	
-    	System.out.println("---------------------------");
-    	System.out.println("|  MELHOR ROTA  EQUIPE M3 |");
-    	System.out.println("---------------------------");
-        System.out.println(" ");
-        System.out.println("O ponto Inicial eh " + locationCaminhao);
-        
-//        System.out.print(" Digite o ponto de partida:\n");
-//        for (int i=1; i<14; i++) {
-//            System.out.print(" Para INT" + Integer.toString(i) + ", digite " + Integer.toString(i-1) + ".\n");
-//        }
-        
+    	truckModel.getStatus();       
         
         	
     	if (statusCaminhao == "cheio" || statusCaminhao == "Cheio" || statusCaminhao == "CHEIO"){
@@ -161,15 +124,10 @@ public class BestRoute
 	    		distance = distanceDesc1;
 	    		myPath = myPathDesc1; 
 	    	}
-	    	
-	    	System.out.println( myPath);
+	 
 	    	myPath = start + " -> " + myPath;
 	    	
-	    	System.out.println("Esta eh a melhor rota: " + myPath);
-	    	System.out.println("Esta eh a distancia: " + distance + " metros");
-	    	System.out.println("desc1 = 16; desc2 = 17; desc3 = 18.");
-	    	
-	    	//sc.close();
+	    	return myPath;
 	    	
         }else if(statusCaminhao == "vazio" || statusCaminhao == "Vazio" || statusCaminhao == "VAZIO"){
         	int esc1 = 13;
@@ -226,17 +184,38 @@ public class BestRoute
 	    		myPath = myPathEsc1; 
 	    		
 	    	}
-	    	
-	    	
+
 	    	myPath = start + " -> " + myPath;
 	    	
-	    	System.out.println("Esta eh a melhor rota: " + myPath);
-	    	System.out.println("Esta eh a distancia: " + distance + " metros");
-	    	System.out.println("esc1 = 13; esc2 = 14; esc3 = 15.");
-	    	
-	    	//sc.close();
+	    	return myPath;
         }
-    	
-    	
+		return "";
+	}
+	
+    public static int[][] shortestpath(int[][] adj, int[][] path) 
+    {
+        int n = adj.length;
+        int[][] ans = new int[n][n];
+        copy(ans, adj);
+    	for (int k=0; k<n;k++) 
+            for (int i=0; i<n; i++) 
+        	for (int j=0; j<n;j++) 
+                    if (ans[i][k]+ans[k][j] < ans[i][j]) {
+                        ans[i][j] = ans[i][k]+ans[k][j];
+          		        path[i][j] = path[k][j]; // k Ã© a conexÃ£o entre pontos
+                    }
+    	return ans;
     }
+    public static void copy(int[][] a, int[][] b) 
+    {
+        for (int i=0;i<a.length;i++)
+            for (int j=0;j<a[0].length;j++)
+                a[i][j] = b[i][j];
+    }
+    public static void main(String[] args) {
+        
+    System.out.println("Melhor rota (cheio,INT4) = " + routeCalc("cheio", "INT4"));
+    System.out.println("Melhor rota (vazio,INT4) = " + routeCalc("Vazio", "INT4"));
+    }
+    
 }
