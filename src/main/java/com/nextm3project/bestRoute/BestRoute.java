@@ -3,7 +3,11 @@ package com.nextm3project.bestRoute;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+<<<<<<< HEAD
 import java.util.Scanner;
+=======
+import org.apache.commons.lang3.ArrayUtils;
+>>>>>>> 2da3b60 (Atualização do pom com biblioteca e best route)
 
 import com.nextm3project.models.TruckModel;
 
@@ -36,7 +40,7 @@ public class BestRoute
     	int contLineMat = 0;
 		
     	// inicio da leitura do grafo
-    	String pathArq = "C:\\temp\\ws-next-project\\next-m3-project\\src\\main\\java\\com\\nextm3project\\bestRoute\\MODELAGEM_DESAFIO_NEXT.csv";
+    	String pathArq = "D:\\eclipseWorkspace\\NextDesafio\\next20221-m3-melhor-rota\\src\\main\\java\\com\\nextm3project\\bestRoute\\MODELAGEM_DESAFIO_NEXT.csv";
 				
 		try (BufferedReader br = new BufferedReader(new FileReader(pathArq))) {
 					
@@ -52,6 +56,7 @@ public class BestRoute
 				contLineMat++;
 						
 				line = br.readLine();
+				
 			}	
 			
 		}
@@ -59,13 +64,14 @@ public class BestRoute
 			System.out.println("Error: " + e.getMessage());
 		}
     	
-    	Scanner sc = new Scanner(System.in);
+    	//Scanner sc = new Scanner(System.in);
                 
-        int[][] path = new int[19][19];
+    	int n = m.length;
+    	int[][] path = new int[n][n];
 
-        int n = m.length;
         
-        //identifica o inicio
+        
+        //Modifica a matriz para encontrar o start
         
         for (int i=0; i<n; i++)
             for (int j=0; j<n; j++)
@@ -77,12 +83,13 @@ public class BestRoute
     	shortestpath(m, path);
     	
     	TruckModel truckModel = new TruckModel();
-    	String statusCaminhao = truckModel.getStatus(); // comunicar com o dado da classe caminhão
-    	// se statusCaminhao = 0, ele está vazio
-    	// se statusCaminhao = 1, ele está cheio
+    	String statusCaminhao = "cheio"; //truckModel.getStatus(); // cheio ou vazio
+    	String locationCaminhao = "INT5"; //truckModel.getLocation(); // location 
     	
-    	String location[] = {"INT1", "INT2", "INT3", "INT4", "INT5", "INT6", "INT7", "INT8", "INT9", "INT10", "INT11", "INT12", "INT13", "ESC1", "ESC2", "ESC3", "DESC1", "DESC2", "DESC3"};
-    	int verticeIndex[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19};
+    	
+    	String locationGraph[] = {"INT1", "INT2", "INT3", "INT4", "INT5", "INT6", "INT7", "INT8", "INT9", "INT10", "INT11", "INT12", "INT13", "ESC1", "ESC2", "ESC3", "DESC1", "DESC2", "DESC3"};
+		int indexMatriz = ArrayUtils.indexOf(locationGraph, locationCaminhao);
+		int start = indexMatriz;
     	
     	truckModel.getStatus();
     	
@@ -90,12 +97,14 @@ public class BestRoute
     	System.out.println("|  MELHOR ROTA  EQUIPE M3 |");
     	System.out.println("---------------------------");
         System.out.println(" ");
-        System.out.print(" Digite o ponto de partida:\n");
-        for (int i=1; i<14; i++) {
-            System.out.print(" Para INT" + Integer.toString(i) + ", digite " + Integer.toString(i-1) + ".\n");
-        }
-        int start = sc.nextInt();
-        System.out.println();
+        System.out.println("O ponto Inicial eh " + locationCaminhao);
+        
+//        System.out.print(" Digite o ponto de partida:\n");
+//        for (int i=1; i<14; i++) {
+//            System.out.print(" Para INT" + Integer.toString(i) + ", digite " + Integer.toString(i-1) + ".\n");
+//        }
+        
+        
         	
     	if (statusCaminhao == "cheio" || statusCaminhao == "Cheio" || statusCaminhao == "CHEIO"){
 	    	
@@ -153,12 +162,14 @@ public class BestRoute
 	    		myPath = myPathDesc1; 
 	    	}
 	    	
+	    	System.out.println( myPath);
 	    	myPath = start + " -> " + myPath;
+	    	
 	    	System.out.println("Esta eh a melhor rota: " + myPath);
 	    	System.out.println("Esta eh a distancia: " + distance + " metros");
 	    	System.out.println("desc1 = 16; desc2 = 17; desc3 = 18.");
 	    	
-	    	sc.close();
+	    	//sc.close();
 	    	
         }else if(statusCaminhao == "vazio" || statusCaminhao == "Vazio" || statusCaminhao == "VAZIO"){
         	int esc1 = 13;
@@ -213,14 +224,17 @@ public class BestRoute
 	    		
 	    		distance = distanceEsc1;
 	    		myPath = myPathEsc1; 
+	    		
 	    	}
 	    	
+	    	
 	    	myPath = start + " -> " + myPath;
+	    	
 	    	System.out.println("Esta eh a melhor rota: " + myPath);
 	    	System.out.println("Esta eh a distancia: " + distance + " metros");
 	    	System.out.println("esc1 = 13; esc2 = 14; esc3 = 15.");
 	    	
-	    	sc.close();
+	    	//sc.close();
         }
     	
     	
