@@ -63,7 +63,7 @@ public class TruckController {
 		return ResponseEntity.status(HttpStatus.OK).body(truckModelOptional.get());
 	}
 	
-	//Criando um método PUT para atualizar algum caminhão do banco de dados, sendo acessado pelo Id.
+	//Criando um método PUT para atualizar algum caminhão do banco de dados, sendo acessado pela placa do caminhão.
 	@PutMapping("/{licensePlateTruck}")
 	public ResponseEntity<Object> updateTruck(@PathVariable(value = "licensePlateTruck") String licensePlateTruck, @RequestBody @Valid TruckDto truckDto){
 		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);			//Fazendo dessa forma, garante que o id e a data de registro não serão modificados.
