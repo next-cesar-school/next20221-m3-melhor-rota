@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nextm3project.bestRoute.BestRoute;
 import com.nextm3project.dtos.TruckDto;
 import com.nextm3project.models.TruckModel;
 import com.nextm3project.services.TruckService;
@@ -44,6 +45,7 @@ public class TruckController {
         var truckModel = new TruckModel();												//Iniciando uma instância para salvar os dados em TruckModel
         BeanUtils.copyProperties(truckDto, truckModel);									//Convertendo os dados inseridos em Dto para Model
         truckModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));			//Setando a data de registro de forma automatica.
+        truckModel.setRoute(BestRoute.routeCalc(truckModel.getStatus(), truckModel.getLocation()));
         return ResponseEntity.status(HttpStatus.CREATED).body(truckService.save(truckModel));
     }
 	
@@ -60,7 +62,18 @@ public class TruckController {
 		if (!truckModelOptional.isPresent()) {																		//Condicao para verificar se aquele id digitado existe ou não.
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");							//Se este Optional não estiver presente, será retornado uma mensagem not found.
 		}
+		
 		return ResponseEntity.status(HttpStatus.OK).body(truckModelOptional.get());
+	}
+	
+	@GetMapping("/route/{licensePlateTruck}")
+	public ResponseEntity<Object> getRoute(@PathVariable(value = "licensePlateTruck") String licensePlateTruck){
+		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);			
+		if (!truckModelOptional.isPresent()) {																		
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");							
+		}
+		var truckModel = truckModelOptional.get();
+		return ResponseEntity.status(HttpStatus.OK).body(truckModel.getRoute());
 	}
 	
 	//Criando um método PUT para atualizar algum caminhão do banco de dados, sendo acessado pela placa do caminhão.
@@ -74,6 +87,7 @@ public class TruckController {
 		var truckModel = truckModelOptional.get();
 		truckModel.setStatus(truckDto.getStatus());										//Setando os dados que podem ser atualizados.
 		truckModel.setLocation(truckDto.getLocation());									//Nao coloquei a placa do caminhao para atualizar.
+		truckModel.setRoute(BestRoute.routeCalc(truckModel.getStatus(), truckModel.getLocation()));
 		return ResponseEntity.status(HttpStatus.OK).body(truckService.save(truckModel));
 	}
 }

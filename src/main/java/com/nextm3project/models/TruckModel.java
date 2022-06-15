@@ -30,6 +30,18 @@ public class TruckModel implements Serializable {  //Serializable + serialVersio
 	
 	@Column(nullable = false)
 	private LocalDateTime registrationDate;  //Data de registro
+	
+	@Column
+	private String route; // Melhor rota
+	
+
+	public String getRoute() {
+		return route;
+	}
+
+	public void setRoute(String route) {
+		this.route = route;
+	}
 
 	public Integer getId() {
 		return id;
@@ -70,4 +82,5 @@ public class TruckModel implements Serializable {  //Serializable + serialVersio
 	public void setRegistrationDate(LocalDateTime registrationDate) {
 		this.registrationDate = registrationDate;
 	}
+
 }
