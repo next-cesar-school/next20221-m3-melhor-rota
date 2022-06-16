@@ -1,5 +1,6 @@
 package com.nextm3project.controllers;
 
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -39,7 +40,7 @@ public class TruckController {
 	//Criando o método POST
 	
 	@PostMapping
-    public ResponseEntity<Object> saveTruck(@RequestBody @Valid TruckDto truckDto){		//Método para salvar so dados digitados pelo cliente.
+    public ResponseEntity<Object> saveTruck(@RequestBody @Valid TruckDto truckDto) throws URISyntaxException{		//Método para salvar so dados digitados pelo cliente.
         if(truckService.existsByLicensePlateTruck(truckDto.getLicensePlateTruck())){	//Verificação se já existe registro dos dados: placa do caminhao.
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Truck License Plate is already in use!");
         }        
@@ -79,7 +80,7 @@ public class TruckController {
 	
 	//Método para exibir a distancia da rota (custo)
 	@GetMapping("/distance/{licensePlateTruck}")
-	public ResponseEntity<Object> getDistance(@PathVariable(value = "licensePlateTruck") String licensePlateTruck){
+	public ResponseEntity<Object> getDistance(@PathVariable(value = "licensePlateTruck") String licensePlateTruck) throws URISyntaxException{
 		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);			
 		if (!truckModelOptional.isPresent()) {																		
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");							
@@ -92,7 +93,7 @@ public class TruckController {
 	
 	//Criando um método PUT para atualizar algum caminhão do banco de dados, sendo acessado pela placa do caminhão.
 	@PutMapping("/{licensePlateTruck}")
-	public ResponseEntity<Object> updateTruck(@PathVariable(value = "licensePlateTruck") String licensePlateTruck, @RequestBody @Valid TruckDto truckDto){
+	public ResponseEntity<Object> updateTruck(@PathVariable(value = "licensePlateTruck") String licensePlateTruck, @RequestBody @Valid TruckDto truckDto) throws URISyntaxException{
 		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);			//Fazendo dessa forma, garante que o id e a data de registro não serão modificados.
 		if (!truckModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");

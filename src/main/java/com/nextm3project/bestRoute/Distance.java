@@ -1,9 +1,11 @@
 package com.nextm3project.bestRoute;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -47,14 +49,15 @@ public class Distance implements Serializable {
 	}
 
 
-	public static int distanceCalc(String status, String location) {
+	public static int distanceCalc(String status, String location) throws URISyntaxException {
 		int[][] m = new int[19][19];
 		int contLineMat = 0;
 
 		// inicio da leitura do grafo
-		String pathArq = "C:\\temp\\ws-next-project\\next20221-m3-melhor-rota\\src\\main\\java\\com\\nextm3project\\bestRoute\\MODELAGEM_DESAFIO_NEXT.csv";
+		//String pathArq = "C:\\temp\\ws-next-project\\next20221-m3-melhor-rota\\src\\main\\java\\com\\nextm3project\\bestRoute\\MODELAGEM_DESAFIO_NEXT.csv";
 
-		try (BufferedReader br = new BufferedReader(new FileReader(pathArq))) {
+		try (BufferedReader br = Files.newBufferedReader(
+				Paths.get(ClassLoader.getSystemResource("MODELAGEM_DESAFIO_NEXT.csv").toURI()))) {
 
 			String line = br.readLine();
 			line = br.readLine();
