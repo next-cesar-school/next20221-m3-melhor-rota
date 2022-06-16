@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nextm3project.bestRoute.BestRoute;
+import com.nextm3project.bestRoute.Distance;
 import com.nextm3project.dtos.TruckDto;
 import com.nextm3project.models.TruckModel;
 import com.nextm3project.services.TruckService;
@@ -62,10 +63,10 @@ public class TruckController {
 		if (!truckModelOptional.isPresent()) {																		//Condicao para verificar se aquele id digitado existe ou não.
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");							//Se este Optional não estiver presente, será retornado uma mensagem not found.
 		}
-		
 		return ResponseEntity.status(HttpStatus.OK).body(truckModelOptional.get());
 	}
 	
+	//Criado um método GET para exibicao da rota do caminhao buscando no banco de dados pela placa.
 	@GetMapping("/route/{licensePlateTruck}")
 	public ResponseEntity<Object> getRoute(@PathVariable(value = "licensePlateTruck") String licensePlateTruck){
 		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);			
@@ -74,6 +75,19 @@ public class TruckController {
 		}
 		var truckModel = truckModelOptional.get();
 		return ResponseEntity.status(HttpStatus.OK).body(truckModel.getRoute());
+	}
+	
+	//Método para exibir a distancia da rota (custo)
+	@GetMapping("/distance/{licensePlateTruck}")
+	public ResponseEntity<Object> getDistance(@PathVariable(value = "licensePlateTruck") String licensePlateTruck){
+		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);			
+		if (!truckModelOptional.isPresent()) {																		
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");							
+		}
+		var truckModel =  truckModelOptional.get();
+		var distance = new Distance();
+		distance.setCost(Distance.distanceCalc(truckModel.getStatus(), truckModel.getLocation()));
+		return ResponseEntity.status(HttpStatus.OK).body(" " + truckModel.getLicensePlateTruck() + "\n distance: " + distance.getCost() + "m");
 	}
 	
 	//Criando um método PUT para atualizar algum caminhão do banco de dados, sendo acessado pela placa do caminhão.

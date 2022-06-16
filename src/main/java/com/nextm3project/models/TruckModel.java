@@ -10,12 +10,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity	//Tornando a classe uma entidade
 @Table(name = "TRUCK")	//Criando a tabela e definindo o nome
 public class TruckModel implements Serializable {  //Serializable + serialVersionUID serve para fazer o controle das versões no JVM
 	private static final long serialVersionUID = 1L;  // ID da versão serial padrão para TruckModel
 	
 	@Id
+	@JsonIgnore										//annotation para não exibir no Rest.
 	@GeneratedValue(strategy = GenerationType.AUTO) //Gerando o Id de forma automatica
 	private Integer id; 							//Escolhido como Integer para obter numeros menores nas buscas.
 	
@@ -25,9 +28,10 @@ public class TruckModel implements Serializable {  //Serializable + serialVersio
 	@Column(nullable = false, length = 5)
 	private String status; //Status do caminhao
 	
-	@Column(nullable = false, length = 10)
+	@Column(nullable = false, length = 5)
 	private String location; //localizacao (vértice)
 	
+	@JsonIgnore
 	@Column(nullable = false)
 	private LocalDateTime registrationDate;  //Data de registro
 	
