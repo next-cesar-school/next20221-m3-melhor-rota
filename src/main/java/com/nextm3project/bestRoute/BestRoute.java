@@ -9,241 +9,373 @@ import java.util.Optional;
 
 import com.nextm3project.models.TruckModel;
 
-
-public class BestRoute 
-{
-	public static String routeCalc (String status , String location) {
+public class BestRoute {
+	public static String routeCalc(String status, String location) {
 		int[][] m = new int[19][19];
-    	int contLineMat = 0;
-		
-    	// inicio da leitura do grafo
-    	String pathArq = "C:\\temp\\ws-next-project\\next20221-m3-melhor-rota\\src\\main\\java\\com\\nextm3project\\bestRoute\\MODELAGEM_DESAFIO_NEXT.csv";
-				
+		int contLineMat = 0;
+
+		// inicio da leitura do grafo
+		String pathArq = "C:\\Users\\Émerson Morais\\eclipse-workspace\\next20221-m3-melhor-rota\\src\\main\\java\\com\\nextm3project\\bestRoute\\MODELAGEM_DESAFIO_NEXT.csv";
+
 		try (BufferedReader br = new BufferedReader(new FileReader(pathArq))) {
-					
+
 			String line = br.readLine();
 			line = br.readLine();
-			
+
 			while (line != null) {
-						
+
 				String[] vect = line.split(";");
-				for (int contColMat=0; contColMat<19; contColMat++) {
+				for (int contColMat = 0; contColMat < 19; contColMat++) {
 					m[contLineMat][contColMat] = Integer.parseInt(vect[contColMat]);
 				}
 				contLineMat++;
-						
+
 				line = br.readLine();
-				
-			}	
-			
-		}
-		catch (IOException e) {
+
+			}
+
+		} catch (IOException e) {
 			System.out.println("Error: " + e.getMessage());
 		}
-    	
-    	//Scanner sc = new Scanner(System.in);
-                
-    	int n = m.length;
-    	int[][] path = new int[n][n];
 
-        
-        
-        //Modifica a matriz para encontrar o start
-        
-        for (int i=0; i<n; i++)
-            for (int j=0; j<n; j++)
-                if (m[i][j] == 100000)
-                    path[i][j] = -1;
-    		else
-                    path[i][j] = i;
+		// Scanner sc = new Scanner(System.in);
 
-    	shortestpath(m, path);
-    	
-    	TruckModel truckModel = new TruckModel();
-    	String statusCaminhao = status; // cheio ou vazio
-    	String locationCaminhao = location; //truckModel.getLocation(); // location 
-    	
-    	Map<Integer, String> matrixMap = new HashMap<Integer, String>();
-    	matrixMap.put(0, 	"INT1");
-    	matrixMap.put(1, 	"INT2"); 
-    	matrixMap.put(2, 	"INT3"); 
-    	matrixMap.put(3, 	"INT4"); 
-    	matrixMap.put(4, 	"INT5"); 
-    	matrixMap.put(5, 	"INT6"); 
-    	matrixMap.put(6, 	"INT7"); 
-    	matrixMap.put(7, 	"INT8"); 
-    	matrixMap.put(8, 	"INT9"); 
-    	matrixMap.put(9, 	"INT10"); 
-    	matrixMap.put(10, 	"INT11"); 
-    	matrixMap.put(11, 	"INT12"); 
-    	matrixMap.put(12, 	"INT13"); 
-    	matrixMap.put(13, 	"ESC1");
-    	matrixMap.put(14, 	"ESC2"); 
-    	matrixMap.put(15,	"ESC3"); 
-    	matrixMap.put(16, 	"DESC1"); 
-    	matrixMap.put(17, 	"DESC2"); 
-    	matrixMap.put(18, 	"DESC3"); 
-    	
-    	Optional<Integer> indexMatriz = matrixMap.entrySet().stream()
-    		.filter(entry -> entry.getValue().equalsIgnoreCase(locationCaminhao))
-    		.map(entry-> entry.getKey())
-    		.findFirst();
+		int n = m.length;
+		int[][] path = new int[n][n];
 
-    	if(indexMatriz.isEmpty()) {
-    		//validação caso não tenha 
-    	}
-    	
+		// Modifica a matriz para encontrar o start
+
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++)
+				if (m[i][j] == 100000)
+					path[i][j] = -1;
+				else
+					path[i][j] = i;
+
+		shortestpath(m, path);
+
+		TruckModel truckModel = new TruckModel();
+		String statusCaminhao = status; // cheio ou vazio
+		String locationCaminhao = location; // truckModel.getLocation(); // location
+
+		Map<Integer, String> matrixMap = new HashMap<Integer, String>();
+		matrixMap.put(0, "INT1");
+		matrixMap.put(1, "INT2");
+		matrixMap.put(2, "INT3");
+		matrixMap.put(3, "INT4");
+		matrixMap.put(4, "INT5");
+		matrixMap.put(5, "INT6");
+		matrixMap.put(6, "INT7");
+		matrixMap.put(7, "INT8");
+		matrixMap.put(8, "INT9");
+		matrixMap.put(9, "INT10");
+		matrixMap.put(10, "INT11");
+		matrixMap.put(11, "INT12");
+		matrixMap.put(12, "INT13");
+		matrixMap.put(13, "ESC1");
+		matrixMap.put(14, "ESC2");
+		matrixMap.put(15, "ESC3");
+		matrixMap.put(16, "DESC1");
+		matrixMap.put(17, "DESC2");
+		matrixMap.put(18, "DESC3");
+
+		Optional<Integer> indexMatriz = matrixMap.entrySet().stream()
+				.filter(entry -> entry.getValue().equalsIgnoreCase(locationCaminhao)).map(entry -> entry.getKey())
+				.findFirst();
+
+		if (indexMatriz.isEmpty()) {
+			// validação caso não tenha
+		}
+
 		int start = indexMatriz.get();
-    	
-    	truckModel.getStatus();       
-        String result = "";	
-    	if (statusCaminhao.equalsIgnoreCase("cheio")){
-	    	
-	    	int desc1 = 16;
-	    	int desc2 = 17;
-	    	int desc3 = 18;
-	    	
-	        String myPathDesc1 = matrixMap.get(desc1) + "";
-	        String myPathDesc2 = matrixMap.get(desc2) + "";
-	        String myPathDesc3 = matrixMap.get(desc3) + "";
-	        String myPath = "";
-	       
-	
-	        int distanceDesc1 = 0;
-	        int distanceDesc2 = 0;
-	        int distanceDesc3 = 0;
-	        int distance = 0;	                  
-	        
-	        while (path[start][desc1] != start) {
-	
-	    		distanceDesc1 = m[path[start][desc1]][desc1] + distanceDesc1;   		
-	            myPathDesc1 = matrixMap.get(path[start][desc1]) + " -> " + myPathDesc1;
-	           
-	            desc1 = path[start][desc1];
-	    	}
-	    	distanceDesc1 = m[path[start][desc1]][desc1] + distanceDesc1;
-	    	
-	    	while (path[start][desc2] != start) {
-	
-	    		distanceDesc2 = m[path[start][desc2]][desc2] + distanceDesc2;   		
-	            myPathDesc2 = matrixMap.get(path[start][desc2]) + " -> " + myPathDesc2;
-	           
-	            desc2 = path[start][desc2];
-	    	}
-	    	distanceDesc2 = m[path[start][desc2]][desc2] + distanceDesc2;
-	    	
-	    	while (path[start][desc3] != start) {
-	
-	    		distanceDesc3 = m[path[start][desc3]][desc3] + distanceDesc3;   		
-	            myPathDesc3 = matrixMap.get(path[start][desc3]) + " -> " + myPathDesc3;
-	           
-	            desc3 = path[start][desc3];
-	    	}
-	    	distanceDesc3 = m[path[start][desc3]][desc3] + distanceDesc3;
-	    	
-	    	if (distanceDesc1 > distanceDesc2 && distanceDesc2 > distanceDesc3 ){
-	    		distance = distanceDesc3;
-	    		myPath = myPathDesc3;
-	    		result = myPathDesc3;
-	    	}else if (distanceDesc1 > distanceDesc2){
-	    		distance = distanceDesc2;
-	    		myPath = myPathDesc2;
-	    		result = myPathDesc2;
-	    	}else {
-	    		
-	    		distance = distanceDesc1;
-	    		myPath = myPathDesc1; 
-	    		result = myPathDesc1;
-	    	}
-	 
-	    	myPath = matrixMap.get(start) + " -> " + myPath;
-	    	
-	    	return myPath;
-	    	
-        }else if(statusCaminhao.equalsIgnoreCase("vazio")){
-        	int esc1 = 13;
-	    	int esc2 = 14;
-	    	int esc3 = 15;
-	    	
-	        String myPathEsc1 = matrixMap.get(esc1) + "";
-	        String myPathEsc2 = matrixMap.get(esc2) + "";
-	        String myPathEsc3 = matrixMap.get(esc3) + "";
-	        String myPath = "";
-	       
-	
-	        int distanceEsc1 = 0;
-	        int distanceEsc2 = 0;
-	        int distanceEsc3 = 0;
-	        int distance = 0;	                  
-	        
-	        while (path[start][esc1] != start) {
-	
-	    		distanceEsc1 = m[path[start][esc1]][esc1] + distanceEsc1;   		
-	            myPathEsc1 = matrixMap.get(path[start][esc1]) + " -> " + myPathEsc1;
-	           
-	            esc1 = path[start][esc1];
-	    	}
-	    	distanceEsc1 = m[path[start][esc1]][esc1] + distanceEsc1;
-	    	
-	    	while (path[start][esc2] != start) {
-	
-	    		distanceEsc2 = m[path[start][esc2]][esc2] + distanceEsc2;   		
-	            myPathEsc2 = matrixMap.get(path[start][esc2]) + " -> " + myPathEsc2;
-	           
-	            esc2 = path[start][esc2];
-	    	}
-	    	distanceEsc2 = m[path[start][esc2]][esc2] + distanceEsc2;
-	    	
-	    	while (path[start][esc3] != start) {
-	
-	    		distanceEsc3 = m[path[start][esc3]][esc3] + distanceEsc3;   		
-	            myPathEsc3 = matrixMap.get(path[start][esc3]) + " -> " + myPathEsc3;
-	           
-	            esc3 = path[start][esc3];
-	    	}
-	    	distanceEsc3 = m[path[start][esc3]][esc3] + distanceEsc3;
-	    	
-	    	if (distanceEsc1 > distanceEsc2 && distanceEsc2 > distanceEsc3 ){
-	    		distance = distanceEsc3;
-	    		myPath = myPathEsc3;
-	    		result = myPathEsc3;
-	    	}else if (distanceEsc1 > distanceEsc2){
-	    		distance = distanceEsc2;
-	    		myPath = myPathEsc2;
-	    		result = myPathEsc2;
-	    	}else {
-	    		
-	    		distance = distanceEsc1;
-	    		myPath = myPathEsc1;
-	    		result = myPathEsc1;
-	    		
-	    	}
 
-	    	myPath =  matrixMap.get(start) + " -> " + myPath;
-	    	
-	    	return myPath;
-        }
-		return result;
+		truckModel.getStatus();
+
+		if (statusCaminhao.equalsIgnoreCase("cheio")) {
+
+			int desc1 = 16;
+			int desc2 = 17;
+			int desc3 = 18;
+
+			String[] distRouteDesc1 = BestRoute.calculateDistanceAndPath(m, path, start, desc1);
+			String[] distRouteDesc2 = BestRoute.calculateDistanceAndPath(m, path, start, desc2);
+			String[] distRouteDesc3 = BestRoute.calculateDistanceAndPath(m, path, start, desc3);
+
+			String BR = BestRoute.calculateBestRoute(start, distRouteDesc1, distRouteDesc2, distRouteDesc3);
+			return BR;
+
+		} else if (statusCaminhao.equalsIgnoreCase("vazio")) {
+			int esc1 = 13;
+			int esc2 = 14;
+			int esc3 = 15;
+
+			String[] distRouteEsc1 = BestRoute.calculateDistanceAndPath(m, path, start, esc1);
+			String[] distRouteEsc2 = BestRoute.calculateDistanceAndPath(m, path, start, esc2);
+			String[] distRouteEsc3 = BestRoute.calculateDistanceAndPath(m, path, start, esc3);
+
+			String BR = BestRoute.calculateBestRoute(start, distRouteEsc1, distRouteEsc2, distRouteEsc3);
+			return BR;
+		} else {
+			System.out.println("Status inválido. Opçoes para Status válidos: Cheio ou Vazio");
+			return null;
+		}
+	}
+
+	public static int[][] shortestpath(int[][] adj, int[][] path) {
+		int n = adj.length;
+		int[][] ans = new int[n][n];
+		copy(ans, adj);
+		for (int k = 0; k < n; k++)
+			for (int i = 0; i < n; i++)
+				for (int j = 0; j < n; j++)
+					if (ans[i][k] + ans[k][j] < ans[i][j]) {
+						ans[i][j] = ans[i][k] + ans[k][j];
+						path[i][j] = path[k][j]; // k Ã© a conexÃ£o entre pontos
+					}
+		return ans;
+	}
+
+	public static String[] calculateDistanceAndPath(int[][] m, int[][] path, int location, int destiny) {
+		int distance = 0;
+		String[] distRoute = new String[2];
+		Map<Integer, String> matrixMap = new HashMap<Integer, String>();
+		matrixMap.put(0, "INT1");
+		matrixMap.put(1, "INT2");
+		matrixMap.put(2, "INT3");
+		matrixMap.put(3, "INT4");
+		matrixMap.put(4, "INT5");
+		matrixMap.put(5, "INT6");
+		matrixMap.put(6, "INT7");
+		matrixMap.put(7, "INT8");
+		matrixMap.put(8, "INT9");
+		matrixMap.put(9, "INT10");
+		matrixMap.put(10, "INT11");
+		matrixMap.put(11, "INT12");
+		matrixMap.put(12, "INT13");
+		matrixMap.put(13, "ESC1");
+		matrixMap.put(14, "ESC2");
+		matrixMap.put(15, "ESC3");
+		matrixMap.put(16, "DESC1");
+		matrixMap.put(17, "DESC2");
+		matrixMap.put(18, "DESC3");
+
+		String myPath = matrixMap.get(destiny) + "";
+
+		while (path[location][destiny] != location) {
+
+			distance = m[path[location][destiny]][destiny] + distance;
+			myPath = matrixMap.get(path[location][destiny]) + " -> " + myPath;
+			destiny = path[location][destiny];
+		}
+		distance = m[path[location][destiny]][destiny] + distance;
+
+		distRoute[0] = Integer.toString(distance);
+		distRoute[1] = myPath;
+
+		return distRoute;
+	}
+
+	public static int distanceCalc(String status, String location) {
+		int[][] m = new int[19][19];
+		int contLineMat = 0;
+
+		// inicio da leitura do grafo
+		String pathArq = "C:\\Users\\Émerson Morais\\eclipse-workspace\\next20221-m3-melhor-rota\\src\\main\\java\\com\\nextm3project\\bestRoute\\MODELAGEM_DESAFIO_NEXT.csv";
+
+		try (BufferedReader br = new BufferedReader(new FileReader(pathArq))) {
+
+			String line = br.readLine();
+			line = br.readLine();
+
+			while (line != null) {
+
+				String[] vect = line.split(";");
+				for (int contColMat = 0; contColMat < 19; contColMat++) {
+					m[contLineMat][contColMat] = Integer.parseInt(vect[contColMat]);
+				}
+				contLineMat++;
+
+				line = br.readLine();
+
+			}
+
+		} catch (IOException e) {
+			System.out.println("Error: " + e.getMessage());
+		}
+
+		// Scanner sc = new Scanner(System.in);
+
+		int n = m.length;
+		int[][] path = new int[n][n];
+
+		// Modifica a matriz para encontrar o start
+
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++)
+				if (m[i][j] == 100000)
+					path[i][j] = -1;
+				else
+					path[i][j] = i;
+
+		shortestpath(m, path);
+
+		TruckModel truckModel = new TruckModel();
+		String statusCaminhao = status; // cheio ou vazio
+		String locationCaminhao = location; // truckModel.getLocation(); // location
+
+		Map<Integer, String> matrixMap = new HashMap<Integer, String>();
+		matrixMap.put(0, "INT1");
+		matrixMap.put(1, "INT2");
+		matrixMap.put(2, "INT3");
+		matrixMap.put(3, "INT4");
+		matrixMap.put(4, "INT5");
+		matrixMap.put(5, "INT6");
+		matrixMap.put(6, "INT7");
+		matrixMap.put(7, "INT8");
+		matrixMap.put(8, "INT9");
+		matrixMap.put(9, "INT10");
+		matrixMap.put(10, "INT11");
+		matrixMap.put(11, "INT12");
+		matrixMap.put(12, "INT13");
+		matrixMap.put(13, "ESC1");
+		matrixMap.put(14, "ESC2");
+		matrixMap.put(15, "ESC3");
+		matrixMap.put(16, "DESC1");
+		matrixMap.put(17, "DESC2");
+		matrixMap.put(18, "DESC3");
+
+		Optional<Integer> indexMatriz = matrixMap.entrySet().stream()
+				.filter(entry -> entry.getValue().equalsIgnoreCase(locationCaminhao)).map(entry -> entry.getKey())
+				.findFirst();
+
+		if (indexMatriz.isEmpty()) {
+			// validação caso não tenha
+		}
+
+		int start = indexMatriz.get();
+
+		truckModel.getStatus();
+
+		if (statusCaminhao.equalsIgnoreCase("cheio")) {
+
+			int desc1 = 16;
+			int desc2 = 17;
+			int desc3 = 18;
+
+			String[] distRouteDesc1 = BestRoute.calculateDistanceAndPath(m, path, start, desc1);
+			String[] distRouteDesc2 = BestRoute.calculateDistanceAndPath(m, path, start, desc2);
+			String[] distRouteDesc3 = BestRoute.calculateDistanceAndPath(m, path, start, desc3);
+
+			int BR = BestRoute.calculateBestDistance(start, distRouteDesc1, distRouteDesc2, distRouteDesc3);
+			return BR;
+
+		} else if (statusCaminhao.equalsIgnoreCase("vazio")) {
+			int esc1 = 13;
+			int esc2 = 14;
+			int esc3 = 15;
+
+			String[] distRouteEsc1 = BestRoute.calculateDistanceAndPath(m, path, start, esc1);
+			String[] distRouteEsc2 = BestRoute.calculateDistanceAndPath(m, path, start, esc2);
+			String[] distRouteEsc3 = BestRoute.calculateDistanceAndPath(m, path, start, esc3);
+
+			int BR = BestRoute.calculateBestDistance(start, distRouteEsc1, distRouteEsc2, distRouteEsc3);
+			return BR;
+		} else {
+			System.out.println("Status inválido. Opçoes para Status válidos: Cheio ou Vazio");
+			return 0;
+		}
+	}
+
+	public static String calculateBestRoute(int location, String[] distRoute1, String[] distRoute2,
+			String[] distRoute3) {
+		int distR1 = Integer.parseInt(distRoute1[0]);
+		int distR2 = Integer.parseInt(distRoute2[0]);
+		int distR3 = Integer.parseInt(distRoute3[0]);
+		String myPath = "";
+		Map<Integer, String> matrixMap = new HashMap<Integer, String>();
+		matrixMap.put(0, "INT1");
+		matrixMap.put(1, "INT2");
+		matrixMap.put(2, "INT3");
+		matrixMap.put(3, "INT4");
+		matrixMap.put(4, "INT5");
+		matrixMap.put(5, "INT6");
+		matrixMap.put(6, "INT7");
+		matrixMap.put(7, "INT8");
+		matrixMap.put(8, "INT9");
+		matrixMap.put(9, "INT10");
+		matrixMap.put(10, "INT11");
+		matrixMap.put(11, "INT12");
+		matrixMap.put(12, "INT13");
+		matrixMap.put(13, "ESC1");
+		matrixMap.put(14, "ESC2");
+		matrixMap.put(15, "ESC3");
+		matrixMap.put(16, "DESC1");
+		matrixMap.put(17, "DESC2");
+		matrixMap.put(18, "DESC3");
+
+		if (distR1 > distR2 && distR2 > distR3) {
+			myPath = distRoute3[1];
+
+		} else if (distR1 > distR2) {
+			myPath = distRoute2[1];
+
+		} else {
+			myPath = distRoute1[1];
+
+		}
+
+		String myBestPath = matrixMap.get(location) + " -> " + myPath;
+
+		return myBestPath;
+	}
+
+	public static int calculateBestDistance(int location, String[] distRoute1, String[] distRoute2,
+			String[] distRoute3) {
+		int distR1 = Integer.parseInt(distRoute1[0]);
+		int distR2 = Integer.parseInt(distRoute2[0]);
+		int distR3 = Integer.parseInt(distRoute3[0]);
+
+		Map<Integer, String> matrixMap = new HashMap<Integer, String>();
+		matrixMap.put(0, "INT1");
+		matrixMap.put(1, "INT2");
+		matrixMap.put(2, "INT3");
+		matrixMap.put(3, "INT4");
+		matrixMap.put(4, "INT5");
+		matrixMap.put(5, "INT6");
+		matrixMap.put(6, "INT7");
+		matrixMap.put(7, "INT8");
+		matrixMap.put(8, "INT9");
+		matrixMap.put(9, "INT10");
+		matrixMap.put(10, "INT11");
+		matrixMap.put(11, "INT12");
+		matrixMap.put(12, "INT13");
+		matrixMap.put(13, "ESC1");
+		matrixMap.put(14, "ESC2");
+		matrixMap.put(15, "ESC3");
+		matrixMap.put(16, "DESC1");
+		matrixMap.put(17, "DESC2");
+		matrixMap.put(18, "DESC3");
+
+		if (distR1 > distR2 && distR2 > distR3) {
+			return distR3;
+
+		} else if (distR1 > distR2) {
+			return distR2;
+
+		} else {
+			return distR1;
+		}
 	}
 	
-    public static int[][] shortestpath(int[][] adj, int[][] path) 
-    {
-        int n = adj.length;
-        int[][] ans = new int[n][n];
-        copy(ans, adj);
-    	for (int k=0; k<n;k++) 
-            for (int i=0; i<n; i++) 
-        	for (int j=0; j<n;j++) 
-                    if (ans[i][k]+ans[k][j] < ans[i][j]) {
-                        ans[i][j] = ans[i][k]+ans[k][j];
-          		        path[i][j] = path[k][j]; // k Ã© a conexÃ£o entre pontos
-                    }
-    	return ans;
-    }
-    public static void copy(int[][] a, int[][] b) 
-    {
-        for (int i=0;i<a.length;i++)
-            for (int j=0;j<a[0].length;j++)
-                a[i][j] = b[i][j];
-    }
+	public static void copy(int[][] a, int[][] b) {
+		for (int i = 0; i < a.length; i++)
+			for (int j = 0; j < a[0].length; j++)
+				a[i][j] = b[i][j];
+	}
+
+	public static void main(String[] args) {
+
+		System.out.println("Melhor rota (cheio,INT4) = " + routeCalc("cheio", "INT4"));
+		System.out.println("Melhor rota (vazio,INT4) = " + routeCalc("Vazio", "INT4"));
+	}
 }
