@@ -56,25 +56,25 @@ public class BestRoute {
 		String locationCaminhao = location;
 		
 		Map<Integer, String> matrixMap = new HashMap<Integer, String>();
-		matrixMap.put(0, "INT1");
-		matrixMap.put(1, "INT2");
-		matrixMap.put(2, "INT3");
-		matrixMap.put(3, "INT4");
-		matrixMap.put(4, "INT5");
-		matrixMap.put(5, "INT6");
-		matrixMap.put(6, "INT7");
-		matrixMap.put(7, "INT8");
-		matrixMap.put(8, "INT9");
-		matrixMap.put(9, "INT10");
-		matrixMap.put(10, "INT11");
-		matrixMap.put(11, "INT12");
-		matrixMap.put(12, "INT13");
-		matrixMap.put(13, "ESC1");
-		matrixMap.put(14, "ESC2");
-		matrixMap.put(15, "ESC3");
-		matrixMap.put(16, "DESC1");
-		matrixMap.put(17, "DESC2");
-		matrixMap.put(18, "DESC3");
+		matrixMap.put(0, RoutesPointsEnum.INT1.name());
+		matrixMap.put(1, RoutesPointsEnum.INT2.name());
+		matrixMap.put(2, RoutesPointsEnum.INT3.name());
+		matrixMap.put(3, RoutesPointsEnum.INT4.name());
+		matrixMap.put(4, RoutesPointsEnum.INT5.name());
+		matrixMap.put(5, RoutesPointsEnum.INT6.name());
+		matrixMap.put(6, RoutesPointsEnum.INT7.name());
+		matrixMap.put(7, RoutesPointsEnum.INT8.name());
+		matrixMap.put(8, RoutesPointsEnum.INT9.name());
+		matrixMap.put(9, RoutesPointsEnum.INT10.name());
+		matrixMap.put(10, RoutesPointsEnum.INT11.name());
+		matrixMap.put(11, RoutesPointsEnum.INT12.name());
+		matrixMap.put(12, RoutesPointsEnum.INT13.name());
+		matrixMap.put(13, RoutesPointsEnum.ESC1.name());
+		matrixMap.put(14, RoutesPointsEnum.ESC2.name());
+		matrixMap.put(15, RoutesPointsEnum.ESC3.name());
+		matrixMap.put(16, RoutesPointsEnum.DESC1.name());
+		matrixMap.put(17, RoutesPointsEnum.DESC2.name());
+		matrixMap.put(18, RoutesPointsEnum.DESC3.name());
 
 		Optional<Integer> indexMatriz = matrixMap.entrySet().stream()
 				.filter(entry -> entry.getValue().equalsIgnoreCase(locationCaminhao)).map(entry -> entry.getKey())
@@ -88,7 +88,7 @@ public class BestRoute {
 
 		truckModel.getStatus();
 
-		if (statusCaminhao.equalsIgnoreCase("cheio")) {
+		if (statusCaminhao.equalsIgnoreCase(StatusTruckEnum.CHEIO.name())) {
 
 			int desc1 = 16;
 			int desc2 = 17;
@@ -101,7 +101,7 @@ public class BestRoute {
 			String BR = BestRoute.calculateBestRoute(start, distRouteDesc1, distRouteDesc2, distRouteDesc3);
 			return BR;
 
-		} else if (statusCaminhao.equalsIgnoreCase("vazio")) {
+		} else if (statusCaminhao.equalsIgnoreCase(StatusTruckEnum.VAZIO.name())) {
 			int esc1 = 13;
 			int esc2 = 14;
 			int esc3 = 15;
@@ -127,7 +127,7 @@ public class BestRoute {
 				for (int j = 0; j < n; j++)
 					if (ans[i][k] + ans[k][j] < ans[i][j]) {
 						ans[i][j] = ans[i][k] + ans[k][j];
-						path[i][j] = path[k][j]; // k Ã© a conexÃ£o entre pontos
+						path[i][j] = path[k][j]; // conexÃ£o entre pontos
 					}
 		return ans;
 	}

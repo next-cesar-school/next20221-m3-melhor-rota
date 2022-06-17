@@ -7,6 +7,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.nextm3project.bestRoute.RoutesPointsEnum;
+import com.nextm3project.bestRoute.StatusTruckEnum;
 import com.nextm3project.models.TruckModel;
 import com.nextm3project.repositories.TruckRepository;
 
@@ -41,6 +43,14 @@ public class TruckService {
 	@Transactional																
 	public void delete(TruckModel truckModel) {
 		truckRepository.delete(truckModel);
+	}
+	
+	public boolean validationStatusTruck(final String status){
+		return StatusTruckEnum.check(status);
+	}
+
+	public boolean validationLocationTruck(final String location){
+		return RoutesPointsEnum.check(location);
 	}
 		
 }

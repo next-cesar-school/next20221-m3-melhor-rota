@@ -1,6 +1,7 @@
 package com.nextm3project.controllers;
 
 import java.net.URISyntaxException;
+import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -40,11 +41,16 @@ public class TruckController {
 	//POST
 	@PostMapping
     public ResponseEntity<Object> saveTruck(@RequestBody @Valid TruckDto truckDto) throws URISyntaxException{		
-        if(truckService.existsByLicensePlateTruck(truckDto.getLicensePlateTruck())){
+		try {
+			validation(truckDto);
+		}catch (InvalidParameterException e){
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+		}
+		if(truckService.existsByLicensePlateTruck(truckDto.getLicensePlateTruck())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Truck License Plate is already in use!");
         }        
         var truckModel = new TruckModel();	
-        BeanUtils.copyProperties(truckDto, truckModel);	
+        BeanUtils.copyProperties(truckDto, truckModel);
         truckModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
         truckModel.setRoute(BestRoute.routeCalc(truckModel.getStatus(), truckModel.getLocation()));
         return ResponseEntity.status(HttpStatus.CREATED).body(truckService.save(truckModel));
@@ -82,6 +88,11 @@ public class TruckController {
 	//PUT
 	@PutMapping("/{licensePlateTruck}")
 	public ResponseEntity<Object> updateTruck(@PathVariable(value = "licensePlateTruck") String licensePlateTruck, @RequestBody @Valid TruckDto truckDto) throws URISyntaxException{
+		try {
+			validation(truckDto);
+		}catch (InvalidParameterException e){
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+		}
 		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);
 		if (!truckModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");
@@ -91,5 +102,16 @@ public class TruckController {
 		truckModel.setLocation(truckDto.getLocation());
 		truckModel.setRoute(BestRoute.routeCalc(truckModel.getStatus(), truckModel.getLocation()));
 		return ResponseEntity.status(HttpStatus.OK).body(truckService.save(truckModel));
+	}
+	
+	public void validation(final TruckDto truckDto){
+
+		if(!truckService.validationStatusTruck(truckDto.getStatus())){
+			throw new InvalidParameterException("Conflict: Status invalid!");
+		}
+
+		if(!truckService.validationLocationTruck(truckDto.getLocation())){
+			throw new InvalidParameterException("Conflict: Location invalid!");
+		}
 	}
 }
