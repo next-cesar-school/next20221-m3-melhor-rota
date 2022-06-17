@@ -12,31 +12,32 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Entity	//Tornando a classe uma entidade
-@Table(name = "TRUCK")	//Criando a tabela e definindo o nome
-public class TruckModel implements Serializable {  //Serializable + serialVersionUID serve para fazer o controle das versões no JVM
-	private static final long serialVersionUID = 1L;  // ID da versão serial padrão para TruckModel
+@Entity
+@Table(name = "TRUCK")
+//Serializable + serialVersionUID serve para fazer o controle das versões no JVM.
+public class TruckModel implements Serializable {  
+	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@JsonIgnore										//annotation para não exibir no Rest.
-	@GeneratedValue(strategy = GenerationType.AUTO) //Gerando o Id de forma automatica
-	private Integer id; 							//Escolhido como Integer para obter numeros menores nas buscas.
+	@JsonIgnore										
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Integer id;
 	
 	@Column(nullable = false, unique = true, length = 7)
-	private String licensePlateTruck; //Placa do caminhao
+	private String licensePlateTruck;
 	
 	@Column(nullable = false, length = 5)
-	private String status; //Status do caminhao
+	private String status;
 	
 	@Column(nullable = false, length = 5)
-	private String location; //localizacao (vértice)
+	private String location;
 	
 	@JsonIgnore
 	@Column(nullable = false)
-	private LocalDateTime registrationDate;  //Data de registro
+	private LocalDateTime registrationDate;
 	
 	@Column
-	private String route; // Melhor rota
+	private String route;
 	
 
 	public String getRoute() {
@@ -86,5 +87,4 @@ public class TruckModel implements Serializable {  //Serializable + serialVersio
 	public void setRegistrationDate(LocalDateTime registrationDate) {
 		this.registrationDate = registrationDate;
 	}
-
 }

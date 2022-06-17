@@ -10,42 +10,37 @@ import org.springframework.stereotype.Service;
 import com.nextm3project.models.TruckModel;
 import com.nextm3project.repositories.TruckRepository;
 
-@Service //Por ser uma camada de servico, deve inserir o esteriótipo @Service
+@Service
 public class TruckService {
 
 	//Criando ponto de injeção de dependencias do TrcukRepository
 	
 	final TruckRepository truckRepository;
 	
-	public TruckService(TruckRepository truckRepository) {						//Mesma funcao do @Autowired	
+	public TruckService(TruckRepository truckRepository) {							
 		this.truckRepository = truckRepository;
 	}
 	
-	@Transactional												    			//Em uso de métodos construtivos ou destrutivos, é importante usar o @Transactional, principalmente quando tem relacionamento.
-	public TruckModel save(TruckModel truckmodel) {				    			//Método criado para salvar os dados de Service para Model (truckService.save(truckModel)), presente no Controller.
+	@Transactional												    			
+	public TruckModel save(TruckModel truckmodel) {				 
 		return truckRepository.save(truckmodel);
 	}
 			
-	public boolean existsByLicensePlateTruck(String licensePlateTruck) {  		//Método criado para verificar se já existe a placa do caminhao inserido pelo cliente na classe Controller.
-		return truckRepository.existsByLicensePlateTruck(licensePlateTruck);    //Para funcionar foram declarados em Repository (1).
+	public boolean existsByLicensePlateTruck(String licensePlateTruck) {
+		return truckRepository.existsByLicensePlateTruck(licensePlateTruck);
 	}
 
-	public List<TruckModel> findAll() {											//Método criado para exibir todos os caminhoes cadastrados solicitado pelo Controller.
+	public List<TruckModel> findAll() {
 		return truckRepository.findAll();
 	}
 
-	public Optional<TruckModel> findByLicensePlateTruck(String licensePlateTruck) {							//Método criado para buscas (pesquisar) o caminhao no banco de dados o id através do Controller.
+	public Optional<TruckModel> findByLicensePlateTruck(String licensePlateTruck) {
 		return truckRepository.findByLicensePlateTruck(licensePlateTruck);
 	}
 
-	@Transactional																//É importante usar o @Transactional, principalmente quando tem relacionamento, em metodos destrutivos ou construtivos.
-	public void delete(TruckModel truckModel) {									//Método criado para realizar o delete pelo id, poder ser chamado pelo Controller.
+	@Transactional																
+	public void delete(TruckModel truckModel) {
 		truckRepository.delete(truckModel);
 	}
 		
 }
-
-//@Autowired									    			    //Autowired: Serve para informar ao Spring que em determinados momentos 
-//TruckRepository truckRepository;		        			        //ele vai ter que injetar dependencias de TruckRepository dentro de TruckService (basicamente um construtor).
-
-

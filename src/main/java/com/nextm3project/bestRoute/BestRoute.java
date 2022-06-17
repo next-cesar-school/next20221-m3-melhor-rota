@@ -17,8 +17,6 @@ public class BestRoute {
 		int contLineMat = 0;
 
 		// inicio da leitura do grafo
-		//String pathArq = "D:\\eclipseWorkspace\\NextDesafio\\next20221-m3-melhor-rota\\src\\main\\java\\com\\nextm3project\\bestRoute\\MODELAGEM_DESAFIO_NEXT.csv";
-
 		try (BufferedReader br = Files.newBufferedReader(
 				Paths.get(ClassLoader.getSystemResource("MODELAGEM_DESAFIO_NEXT.csv").toURI()))) {
 
@@ -32,16 +30,12 @@ public class BestRoute {
 					m[contLineMat][contColMat] = Integer.parseInt(vect[contColMat]);
 				}
 				contLineMat++;
-
 				line = br.readLine();
-
 			}
-			
-			
+
 		} catch (IOException e) {
 			System.out.println("Error: " + e.getMessage());
 		}
-
 
 		int n = m.length;
 		int[][] path = new int[n][n];
@@ -180,7 +174,6 @@ public class BestRoute {
 		return distRoute;
 	}
 
-
 	public static String calculateBestRoute(int location, String[] distRoute1, String[] distRoute2,
 			String[] distRoute3) {
 		int distR1 = Integer.parseInt(distRoute1[0]);
@@ -261,11 +254,10 @@ public class BestRoute {
 			return distR1;
 		}
 	}
-	
+
 	public static void copy(int[][] a, int[][] b) {
 		for (int i = 0; i < a.length; i++)
 			for (int j = 0; j < a[0].length; j++)
 				a[i][j] = b[i][j];
 	}
-
 }

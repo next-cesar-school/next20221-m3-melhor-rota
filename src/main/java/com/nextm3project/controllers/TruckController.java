@@ -27,85 +27,69 @@ import com.nextm3project.models.TruckModel;
 import com.nextm3project.services.TruckService;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)		//Permitindo que seja acessado de qualquer fonte.
-@RequestMapping("/truck") 						// Criando o Mapping (URI) a nível de classe
+@CrossOrigin(origins = "*", maxAge = 3600)	//Permitindo que seja acessado de qualquer fonte.
+@RequestMapping("/truck") 					// Criando o Mapping (URI) a nível de classe
 public class TruckController {
 
 	final TruckService truckService;
 	
-	public TruckController(TruckService truckService) {									// Mesma funcao do @Autowired.
+	public TruckController(TruckService truckService) {	
 		this.truckService = truckService;
 	}
 	
-	//Criando o método POST
-	
+	//POST
 	@PostMapping
-    public ResponseEntity<Object> saveTruck(@RequestBody @Valid TruckDto truckDto) throws URISyntaxException{		//Método para salvar so dados digitados pelo cliente.
-        if(truckService.existsByLicensePlateTruck(truckDto.getLicensePlateTruck())){	//Verificação se já existe registro dos dados: placa do caminhao.
+    public ResponseEntity<Object> saveTruck(@RequestBody @Valid TruckDto truckDto) throws URISyntaxException{		
+        if(truckService.existsByLicensePlateTruck(truckDto.getLicensePlateTruck())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Truck License Plate is already in use!");
         }        
-        var truckModel = new TruckModel();												//Iniciando uma instância para salvar os dados em TruckModel
-        BeanUtils.copyProperties(truckDto, truckModel);									//Convertendo os dados inseridos em Dto para Model
-        truckModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));			//Setando a data de registro de forma automatica.
+        var truckModel = new TruckModel();	
+        BeanUtils.copyProperties(truckDto, truckModel);	
+        truckModel.setRegistrationDate(LocalDateTime.now(ZoneId.of("UTC")));
         truckModel.setRoute(BestRoute.routeCalc(truckModel.getStatus(), truckModel.getLocation()));
         return ResponseEntity.status(HttpStatus.CREATED).body(truckService.save(truckModel));
     }
 	
-	//Criando um método GET All para exibicao da listagem de todos os caminhoes cadastrados no banco de dados.
+	//GET All
 	@GetMapping
 	public ResponseEntity<List<TruckModel>> getAllTruck(){
 		return ResponseEntity.status(HttpStatus.OK).body(truckService.findAll());
 	}
 	
-	//Criando um método GET ONE para exibicao do caminhao cadastrado no banco de dados buscando pela placa do caminhão.
+	//GET ONE
 	@GetMapping("/{licensePlateTruck}")
 	public ResponseEntity<Object> getOneTruck(@PathVariable(value = "licensePlateTruck") String licensePlateTruck){
-		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);			//Método findByid serve buscar o id no banco de dados e vai retornar um Optional de TruckModel
-		if (!truckModelOptional.isPresent()) {																		//Condicao para verificar se aquele id digitado existe ou não.
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");							//Se este Optional não estiver presente, será retornado uma mensagem not found.
+		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);			
+		if (!truckModelOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(truckModelOptional.get());
 	}
 	
-	//Criado um método GET para exibicao da rota do caminhao buscando no banco de dados pela placa.
+	//GET ROUTE
 	@GetMapping("/route/{licensePlateTruck}")
-	public ResponseEntity<Object> getRoute(@PathVariable(value = "licensePlateTruck") String licensePlateTruck){
+	public ResponseEntity<Object> getRoute(@PathVariable(value = "licensePlateTruck") String licensePlateTruck) throws URISyntaxException{
 		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);			
 		if (!truckModelOptional.isPresent()) {																		
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");							
 		}
 		var truckModel = truckModelOptional.get();
-		return ResponseEntity.status(HttpStatus.OK).body(truckModel.getRoute());
-	}
-	
-	//Método para exibir a distancia da rota (custo)
-	@GetMapping("/distance/{licensePlateTruck}")
-	public ResponseEntity<Object> getDistance(@PathVariable(value = "licensePlateTruck") String licensePlateTruck) throws URISyntaxException{
-		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);			
-		if (!truckModelOptional.isPresent()) {																		
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");							
-		}
-		var truckModel =  truckModelOptional.get();
 		var distance = new Distance();
 		distance.setCost(Distance.distanceCalc(truckModel.getStatus(), truckModel.getLocation()));
-		return ResponseEntity.status(HttpStatus.OK).body(" " + truckModel.getLicensePlateTruck() + "\n distance: " + distance.getCost() + "m");
+		return ResponseEntity.status(HttpStatus.OK).body(" route: " + truckModel.getRoute() + "\n distance: " + distance.getCost() + "m");
 	}
 	
-	//Criando um método PUT para atualizar algum caminhão do banco de dados, sendo acessado pela placa do caminhão.
+	//PUT
 	@PutMapping("/{licensePlateTruck}")
 	public ResponseEntity<Object> updateTruck(@PathVariable(value = "licensePlateTruck") String licensePlateTruck, @RequestBody @Valid TruckDto truckDto) throws URISyntaxException{
-		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);			//Fazendo dessa forma, garante que o id e a data de registro não serão modificados.
+		Optional<TruckModel> truckModelOptional = truckService.findByLicensePlateTruck(licensePlateTruck);
 		if (!truckModelOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Truck not found.");
 		}
-		//Aproveitando o registro que foi obtido na verificacao do if (truckModelOptional), assim não preciso instanciar do zero.
 		var truckModel = truckModelOptional.get();
-		truckModel.setStatus(truckDto.getStatus());										//Setando os dados que podem ser atualizados.
-		truckModel.setLocation(truckDto.getLocation());									//Nao coloquei a placa do caminhao para atualizar.
+		truckModel.setStatus(truckDto.getStatus());
+		truckModel.setLocation(truckDto.getLocation());
 		truckModel.setRoute(BestRoute.routeCalc(truckModel.getStatus(), truckModel.getLocation()));
 		return ResponseEntity.status(HttpStatus.OK).body(truckService.save(truckModel));
 	}
 }
-
-//@Autowired									//Autowired: Serve para informar ao Spring que em determinados momentos 
-//TruckService truckService;					//ele vai ter que injetar dependencias de TruckService dentro de TruckController (basicamente um construtor).

@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nextm3project.models.TruckModel;
 
 @Entity
@@ -25,13 +26,13 @@ public class Distance implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	@JsonIgnore
 	@GeneratedValue(strategy = GenerationType.AUTO) 
 	private Integer id;
 	
 	@Column
 	private int cost;
 		
-	
 	public Integer getId() {
 		return id;
 	}
@@ -48,13 +49,9 @@ public class Distance implements Serializable {
 		this.cost = cost;
 	}
 
-
 	public static int distanceCalc(String status, String location) throws URISyntaxException {
 		int[][] m = new int[19][19];
 		int contLineMat = 0;
-
-		// inicio da leitura do grafo
-		//String pathArq = "C:\\temp\\ws-next-project\\next20221-m3-melhor-rota\\src\\main\\java\\com\\nextm3project\\bestRoute\\MODELAGEM_DESAFIO_NEXT.csv";
 
 		try (BufferedReader br = Files.newBufferedReader(
 				Paths.get(ClassLoader.getSystemResource("MODELAGEM_DESAFIO_NEXT.csv").toURI()))) {
@@ -69,16 +66,12 @@ public class Distance implements Serializable {
 					m[contLineMat][contColMat] = Integer.parseInt(vect[contColMat]);
 				}
 				contLineMat++;
-
 				line = br.readLine();
-
 			}
 
 		} catch (IOException e) {
 			System.out.println("Error: " + e.getMessage());
 		}
-
-		// Scanner sc = new Scanner(System.in);
 
 		int n = m.length;
 		int[][] path = new int[n][n];
@@ -95,8 +88,8 @@ public class Distance implements Serializable {
 		BestRoute.shortestpath(m, path);
 
 		TruckModel truckModel = new TruckModel();
-		String statusCaminhao = status; // cheio ou vazio
-		String locationCaminhao = location; // truckModel.getLocation(); // location
+		String statusCaminhao = status;
+		String locationCaminhao = location;
 
 		Map<Integer, String> matrixMap = new HashMap<Integer, String>();
 		matrixMap.put(0, "INT1");
